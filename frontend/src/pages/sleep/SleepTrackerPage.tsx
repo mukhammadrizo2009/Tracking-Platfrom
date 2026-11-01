@@ -3,6 +3,8 @@ import { sleepApi } from '../../api/endpoints';
 import type { SleepLog } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
+import { DatePicker } from '../../components/ui/DatePicker';
+import { TimePicker } from '../../components/ui/TimePicker';
 import {
   Moon,
   Plus,
@@ -658,12 +660,10 @@ export const SleepTrackerPage: React.FC = () => {
             <label className="block text-xs font-semibold text-surface-700 dark:text-surface-300 mb-1">
               Date
             </label>
-            <input
-              type="date"
+            <DatePicker
               required
               value={sleepDate}
-              onChange={(e) => setSleepDate(e.target.value)}
-              className="w-full px-3.5 py-2 text-sm rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              onChange={(date) => setSleepDate(date)}
             />
           </div>
 
@@ -761,12 +761,9 @@ export const SleepTrackerPage: React.FC = () => {
                   <label className="block text-xs font-semibold text-surface-700 dark:text-surface-300 mb-1">
                     Bedtime (Fall Asleep)
                   </label>
-                  <input
-                    type="time"
-                    required
+                  <TimePicker
                     value={bedtime}
-                    onChange={(e) => handleTimeChange(e.target.value, wakeTime)}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 font-mono"
+                    onChange={(time) => handleTimeChange(time, wakeTime)}
                   />
                 </div>
 
@@ -774,12 +771,9 @@ export const SleepTrackerPage: React.FC = () => {
                   <label className="block text-xs font-semibold text-surface-700 dark:text-surface-300 mb-1">
                     Wake Time (Morning)
                   </label>
-                  <input
-                    type="time"
-                    required
+                  <TimePicker
                     value={wakeTime}
-                    onChange={(e) => handleTimeChange(bedtime, e.target.value)}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 font-mono"
+                    onChange={(time) => handleTimeChange(bedtime, time)}
                   />
                 </div>
               </div>

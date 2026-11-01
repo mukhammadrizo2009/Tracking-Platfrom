@@ -262,6 +262,28 @@ class HabitCompletionTestCase(APITestCase):
             )
         self.assertEqual(self.habit.current_streak, 3)
 
+    def test_habit_list_includes_completions(self):
+        from apps.habits.models import HabitCompletion
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        HabitCompletion.objects.create(habit=self.habit, completion_date=yesterday, status='done')
+        response = self.client.get('/api/v1/habits/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # response may be a list or paginated dict
+        results = response.data['results'] if isinstance(response.data, dict) and 'results' in response.data else response.data
+        habit_data = next((h for h in results if h['id'] == self.habit.id), None)
+        self.assertIsNotNone(habit_data)
+        self.assertIn('completions', habit_data)
+        self.assertEqual(len(habit_data['completions']), 1)
+        self.assertEqual(habit_data['completions'][0]['completion_date'], str(yesterday))
+
+    def test_past_date_completion_cannot_be_modified(self):
+        yesterday = str(datetime.date.today() - datetime.timedelta(days=1))
+        response = self.client.post(f'/api/v1/habits/{self.habit.id}/completions/', {
+            'completion_date': yesterday,
+            'status': 'done',
+        })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 
 class SleepRecordTestCase(APITestCase):
     """Tests for sleep record validation."""

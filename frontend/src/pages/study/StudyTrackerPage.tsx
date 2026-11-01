@@ -4,6 +4,8 @@ import { formatLocalDate } from '../../utils/date';
 import type { StudySession, Goal } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
+import { Select } from '../../components/ui/Select';
+import { DatePicker } from '../../components/ui/DatePicker';
 import {
   Play,
   Pause,
@@ -276,18 +278,16 @@ export const StudyTrackerPage: React.FC = () => {
             className="w-full px-3.5 py-2 text-xs rounded-xl bg-surface-100 dark:bg-surface-800/80 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
 
-          <select
+          <Select<string | number>
             value={selectedGoalId}
-            onChange={(e) => setSelectedGoalId(e.target.value ? Number(e.target.value) : '')}
-            className="w-full px-3 py-2 text-xs rounded-xl bg-surface-100 dark:bg-surface-800/80 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            <option value="">Tag a Goal (Optional)</option>
-            {goals.map((g) => (
-              <option key={g.id} value={g.id}>
-                {g.title}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => setSelectedGoalId(val ? Number(val) : '')}
+            options={[
+              { value: '', label: 'Tag a Goal (Optional)' },
+              ...goals.map((g) => ({ value: g.id, label: g.title })),
+            ]}
+            size="sm"
+            className="w-full"
+          />
         </div>
 
         {/* Controls */}
@@ -446,7 +446,7 @@ export const StudyTrackerPage: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-surface-700 dark:text-surface-300 mb-1">
                 Duration (Minutes)
@@ -470,12 +470,12 @@ export const StudyTrackerPage: React.FC = () => {
               <label className="block text-xs font-semibold text-surface-700 dark:text-surface-300 mb-1">
                 Date
               </label>
-              <input
-                type="date"
+              <DatePicker
                 required
+                size="md"
+                align="right"
                 value={manualDate}
-                onChange={(e) => setManualDate(e.target.value)}
-                className="w-full px-3.5 py-2 text-sm rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                onChange={(date) => setManualDate(date)}
               />
             </div>
           </div>
@@ -484,18 +484,16 @@ export const StudyTrackerPage: React.FC = () => {
             <label className="block text-xs font-semibold text-surface-700 dark:text-surface-300 mb-1">
               Link with Goal (Optional)
             </label>
-            <select
+            <Select<string | number>
               value={manualGoalId}
-              onChange={(e) => setManualGoalId(e.target.value ? Number(e.target.value) : '')}
-              className="w-full px-3.5 py-2 text-sm rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="">No goal linked</option>
-              {goals.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.title}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setManualGoalId(val ? Number(val) : '')}
+              options={[
+                { value: '', label: 'No goal linked' },
+                ...goals.map((g) => ({ value: g.id, label: g.title })),
+              ]}
+              size="md"
+              className="w-full"
+            />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

@@ -42,6 +42,13 @@ class HabitViewSet(viewsets.ModelViewSet):
         except (ValueError, TypeError):
             return Response({'detail': 'Invalid date format.'}, status=status.HTTP_400_BAD_REQUEST)
         
+        today = timezone.now().date()
+        if completion_date < today:
+            return Response(
+                {'detail': 'Past dates cannot be modified.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         try:
             completion, created = HabitCompletion.objects.get_or_create(
                 habit=habit,
@@ -69,6 +76,12 @@ class HabitViewSet(viewsets.ModelViewSet):
         habit = self.get_object()
         try:
             completion = HabitCompletion.objects.get(id=completion_id, habit=habit)
+            today = timezone.now().date()
+            if completion.completion_date < today:
+                return Response(
+                    {'detail': 'Past dates cannot be modified.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             completion.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except HabitCompletion.DoesNotExist:

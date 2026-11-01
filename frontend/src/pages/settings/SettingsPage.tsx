@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../store/useAuth';
 import { authApi } from '../../api/endpoints';
 import { Button } from '../../components/ui/Button';
+import { Select } from '../../components/ui/Select';
 import {
   User as UserIcon,
   Bell,
@@ -156,20 +157,22 @@ export const SettingsPage: React.FC = () => {
             <label className="block text-xs font-semibold text-surface-700 dark:text-surface-300 mb-1">
               Timezone
             </label>
-            <select
+            <Select<string>
               value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="UTC">UTC (Universal Coordinated Time)</option>
-              <option value="America/New_York">America/New_York (EST/EDT)</option>
-              <option value="America/Chicago">America/Chicago (CST/CDT)</option>
-              <option value="America/Los_Angeles">America/Los_Angeles (PST/PDT)</option>
-              <option value="Europe/London">Europe/London (GMT/BST)</option>
-              <option value="Europe/Paris">Europe/Paris (CET/CEST)</option>
-              <option value="Asia/Tashkent">Asia/Tashkent (UZT +5)</option>
-              <option value="Asia/Tokyo">Asia/Tokyo (JST +9)</option>
-            </select>
+              onChange={(val) => setTimezone(val)}
+              options={[
+                { value: 'UTC', label: 'UTC (Universal Coordinated Time)' },
+                { value: 'America/New_York', label: 'America/New_York (EST/EDT)' },
+                { value: 'America/Chicago', label: 'America/Chicago (CST/CDT)' },
+                { value: 'America/Los_Angeles', label: 'America/Los_Angeles (PST/PDT)' },
+                { value: 'Europe/London', label: 'Europe/London (GMT/BST)' },
+                { value: 'Europe/Paris', label: 'Europe/Paris (CET/CEST)' },
+                { value: 'Asia/Tashkent', label: 'Asia/Tashkent (UZT +5)' },
+                { value: 'Asia/Tokyo', label: 'Asia/Tokyo (JST +9)' },
+              ]}
+              size="md"
+              className="w-full"
+            />
           </div>
 
           {/* Theme switch row */}

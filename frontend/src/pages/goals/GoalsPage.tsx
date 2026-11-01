@@ -3,6 +3,8 @@ import { goalsApi } from '../../api/endpoints';
 import type { Goal } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
+import { Select } from '../../components/ui/Select';
+import { DatePicker } from '../../components/ui/DatePicker';
 import {
   Target,
   Plus,
@@ -418,34 +420,37 @@ export const GoalsPage: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-surface-700 dark:text-surface-300 mb-1">
                 Category
               </label>
-              <select
+              <Select<string>
                 value={goalCategory}
-                onChange={(e) => setGoalCategory(e.target.value as 'learning' | 'career' | 'health' | 'finance' | 'personal' | 'other')}
-                className="w-full px-3 py-2 text-sm rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="learning">Learning</option>
-                <option value="career">Career</option>
-                <option value="health">Health &amp; Fitness</option>
-                <option value="finance">Finance</option>
-                <option value="personal">Personal</option>
-                <option value="other">Other</option>
-              </select>
+                onChange={(val) => setGoalCategory(val as any)}
+                options={[
+                  { value: 'learning', label: 'Learning' },
+                  { value: 'career', label: 'Career' },
+                  { value: 'health', label: 'Health & Fitness' },
+                  { value: 'finance', label: 'Finance' },
+                  { value: 'personal', label: 'Personal' },
+                  { value: 'other', label: 'Other' },
+                ]}
+                size="md"
+                className="w-full"
+              />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-surface-700 dark:text-surface-300 mb-1">
                 Target Deadline
               </label>
-              <input
-                type="date"
+              <DatePicker
                 value={goalTargetDate}
-                onChange={(e) => setGoalTargetDate(e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                onChange={(date) => setGoalTargetDate(date)}
+                placeholder="Pick deadline..."
+                size="md"
+                align="right"
               />
             </div>
           </div>

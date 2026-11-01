@@ -39,7 +39,7 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -48,7 +48,7 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Modal Dialog */}
       <div
-        className={`relative w-full ${maxWidths[maxWidth]} bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-2xl shadow-2xl p-6 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200`}
+        className={`relative w-full ${maxWidths[maxWidth]} bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-2xl shadow-2xl p-6 overflow-visible z-10 animate-in fade-in zoom-in-95 duration-200 my-auto`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-4">
