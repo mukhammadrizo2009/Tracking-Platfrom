@@ -3,6 +3,7 @@ import { plansApi } from '../../api/endpoints';
 import { formatLocalDate } from '../../utils/date';
 import type { DailyPlan, DailyTask } from '../../types';
 import { Button } from '../../components/ui/Button';
+import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import {
   CalendarDays,
   Plus,
@@ -23,6 +24,8 @@ export const PlansPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [newItemTitle, setNewItemTitle] = useState('');
   const [isAdding, setIsAdding] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<{ id: number; title: string } | null>(null);
+  const [isDeletingTask, setIsDeletingTask] = useState(false);
 
   const dateStr = formatLocalDate(currentDate);
 
@@ -183,9 +186,15 @@ export const PlansPage: React.FC = () => {
     }
   };
 
-  const handleDeleteItem = async (taskId: number) => {
+  const handleDeleteItem = (task: DailyTask) => {
+    setTaskToDelete({ id: task.id, title: task.title });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!taskToDelete) return;
+    setIsDeletingTask(true);
     try {
-      await plansApi.deletePlanItem(taskId);
+      await plansApi.deletePlanItem(taskToDelete.id);
       setPlan((prev) => {
         if (!prev) return prev;
         const currentTasks = Array.isArray(prev.tasks)
@@ -193,15 +202,18 @@ export const PlansPage: React.FC = () => {
           : Array.isArray((prev as unknown as { items?: DailyTask[] }).items)
           ? (prev as unknown as { items: DailyTask[] }).items
           : [];
-        const updated = currentTasks.filter((t) => t.id !== taskId);
+        const updated = currentTasks.filter((t) => t.id !== taskToDelete.id);
         return {
           ...prev,
           tasks: updated,
           items: updated,
         } as unknown as DailyPlan;
       });
+      setTaskToDelete(null);
     } catch {
       fetchPlan();
+    } finally {
+      setIsDeletingTask(false);
     }
   };
 
@@ -403,7 +415,7 @@ export const PlansPage: React.FC = () => {
                     </div>
 
                     <button
-                      onClick={() => handleDeleteItem(task.id)}
+                      onClick={() => handleDeleteItem(task)}
                       className="opacity-0 group-hover:opacity-100 p-1 text-surface-400 hover:text-rose-500 transition-opacity"
                       title="Delete item"
                     >
@@ -452,6 +464,17 @@ export const PlansPage: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={taskToDelete !== null}
+        onClose={() => setTaskToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Plan Item"
+        description={`Are you sure you want to remove "${taskToDelete?.title || 'this item'}" from your plan?`}
+        confirmText="Delete Item"
+        isLoading={isDeletingTask}
+      />
     </div>
   );
 };

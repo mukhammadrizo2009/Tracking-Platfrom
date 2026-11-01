@@ -35,6 +35,8 @@ export const GoalsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [goalToDelete, setGoalToDelete] = useState<number | null>(null);
   const [isDeletingGoal, setIsDeletingGoal] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<{ id: number; title: string } | null>(null);
+  const [isDeletingTask, setIsDeletingTask] = useState(false);
 
   // Inline Task Add
   const [newTaskTitle, setNewTaskTitle] = useState<{ [goalId: number]: string }>({});
@@ -110,12 +112,21 @@ export const GoalsPage: React.FC = () => {
     }
   };
 
-  const handleDeleteTask = async (taskId: number) => {
+  const handleDeleteTask = (task: { id: number; title: string }) => {
+    setTaskToDelete(task);
+  };
+
+  const handleConfirmDeleteTask = async () => {
+    if (!taskToDelete) return;
+    setIsDeletingTask(true);
     try {
-      await goalsApi.deleteTask(taskId);
+      await goalsApi.deleteTask(taskToDelete.id);
       fetchGoals();
+      setTaskToDelete(null);
     } catch {
       fetchGoals();
+    } finally {
+      setIsDeletingTask(false);
     }
   };
 
@@ -361,7 +372,7 @@ export const GoalsPage: React.FC = () => {
                             </div>
 
                             <button
-                              onClick={() => handleDeleteTask(task.id)}
+                              onClick={() => handleDeleteTask(task)}
                               className="opacity-0 group-hover:opacity-100 p-1 text-surface-400 hover:text-rose-500 transition-opacity"
                               title="Delete subtask"
                             >
@@ -507,7 +518,7 @@ export const GoalsPage: React.FC = () => {
         </form>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Goal Modal */}
       <ConfirmModal
         isOpen={goalToDelete !== null}
         onClose={() => setGoalToDelete(null)}
@@ -516,6 +527,17 @@ export const GoalsPage: React.FC = () => {
         description="Are you sure you want to delete this goal and all its milestones? This action cannot be undone."
         confirmText="Delete Goal"
         isLoading={isDeletingGoal}
+      />
+
+      {/* Delete Subtask Modal */}
+      <ConfirmModal
+        isOpen={taskToDelete !== null}
+        onClose={() => setTaskToDelete(null)}
+        onConfirm={handleConfirmDeleteTask}
+        title="Delete Milestone Task"
+        description={`Are you sure you want to delete "${taskToDelete?.title || 'this task'}"?`}
+        confirmText="Delete Task"
+        isLoading={isDeletingTask}
       />
     </div>
   );
