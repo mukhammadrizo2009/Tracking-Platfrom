@@ -33,11 +33,18 @@ def serve_react(request, path=""):
                 content_type = 'text/css'
             elif file_path.endswith('.svg'):
                 content_type = 'image/svg+xml'
-            return FileResponse(open(file_path, 'rb'), content_type=content_type)
+            response = FileResponse(open(file_path, 'rb'), content_type=content_type)
+            if 'assets/' in safe_path.replace('\\', '/'):
+                response['Cache-Control'] = 'public, max-age=31536000, immutable'
+            return response
 
     index_path = os.path.join(FRONTEND_DIST, 'index.html')
     if os.path.isfile(index_path):
-        return FileResponse(open(index_path, 'rb'), content_type='text/html')
+        response = FileResponse(open(index_path, 'rb'), content_type='text/html')
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        return response
 
     return HttpResponse("FlowPulse frontend build not found.", status=503)
 
