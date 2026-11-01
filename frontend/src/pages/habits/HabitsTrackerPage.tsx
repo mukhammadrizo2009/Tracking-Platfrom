@@ -721,7 +721,7 @@ export const HabitsTrackerPage: React.FC = () => {
                           {Array.from({ length: calendarMonthInfo.startWeekday }).map((_, idx) => (
                             <div
                               key={`pad-${idx}`}
-                              className="h-12 sm:h-16 rounded-xl bg-surface-100/30 dark:bg-surface-850/20 opacity-30"
+                              className="h-12 sm:h-16 rounded-xl bg-surface-100/30 dark:bg-surface-800/20 opacity-30"
                             />
                           ))}
 

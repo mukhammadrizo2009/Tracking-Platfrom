@@ -249,14 +249,14 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         type="button"
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between gap-2 rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500/50 hover:bg-surface-200/70 dark:hover:bg-surface-750 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${sizeClasses}`}
+        className={`w-full flex items-center justify-between gap-2 rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500/50 hover:bg-surface-200/70 dark:hover:bg-surface-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${sizeClasses}`}
       >
         <span className="flex items-center gap-2 truncate">
           <CalendarIcon className="w-4 h-4 text-surface-400 shrink-0" />
           {formattedDisplay ? (
             <span className="truncate">{formattedDisplay}</span>
           ) : (
-            <span className="text-surface-400">{placeholder}</span>
+            <span className="text-surface-400 dark:text-surface-400">{placeholder}</span>
           )}
         </span>
 
@@ -267,7 +267,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               e.stopPropagation();
               handleClear();
             }}
-            className="p-0.5 rounded-md hover:bg-surface-300 dark:hover:bg-surface-600 text-surface-400 hover:text-surface-600 dark:hover:text-surface-200 shrink-0 ml-1"
+            className="p-0.5 rounded-md hover:bg-surface-300 dark:hover:bg-surface-700 text-surface-400 hover:text-surface-600 dark:hover:text-surface-200 shrink-0 ml-1"
             title="Clear date"
           >
             <X className="w-3.5 h-3.5" />
@@ -282,10 +282,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             popoverAlign === 'right' ? 'right-0' : 'left-0'
           } ${
             dropUp ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
-          } z-50 w-[270px] sm:w-[285px] max-w-[calc(100vw-32px)] p-2.5 sm:p-3 rounded-2xl bg-white dark:bg-surface-850 border border-surface-200 dark:border-surface-700/80 shadow-2xl shadow-surface-950/20 dark:shadow-surface-950/60 animate-in fade-in zoom-in-95 duration-150 space-y-2 sm:space-y-2.5`}
+          } z-50 w-[270px] sm:w-[285px] max-w-[calc(100vw-32px)] p-2.5 sm:p-3 rounded-2xl bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 shadow-2xl shadow-surface-950/20 dark:shadow-surface-950/70 animate-in fade-in zoom-in-95 duration-150 space-y-2 sm:space-y-2.5`}
         >
           {/* Calendar Header */}
-          <div className="flex items-center justify-between pb-1 border-b border-surface-100 dark:border-surface-800">
+          <div className="flex items-center justify-between pb-1.5 border-b border-surface-100 dark:border-surface-700">
             <span className="font-bold text-xs sm:text-sm text-surface-900 dark:text-white">
               {monthData.monthName} {monthData.year}
             </span>
@@ -294,7 +294,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               <button
                 type="button"
                 onClick={handlePrevMonth}
-                className="p-1 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-750 text-surface-500 hover:text-surface-900 dark:hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white transition-colors cursor-pointer"
                 title="Previous month"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -302,7 +302,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               <button
                 type="button"
                 onClick={handleNextMonth}
-                className="p-1 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-750 text-surface-500 hover:text-surface-900 dark:hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white transition-colors cursor-pointer"
                 title="Next month"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -311,7 +311,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           </div>
 
           {/* Weekday Labels (Mo..Su) */}
-          <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-surface-400 uppercase tracking-wider">
+          <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-surface-400 dark:text-surface-400 uppercase tracking-wider">
             {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((d) => (
               <div key={d} className="py-0.5">
                 {d}
@@ -338,7 +338,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                     ? 'bg-gradient-to-r from-primary-600 to-indigo-600 text-white font-extrabold shadow-md shadow-primary-500/30 scale-105'
                     : day.isToday
                     ? 'border-2 border-primary-500 text-primary-600 dark:text-primary-400 font-bold hover:bg-primary-50 dark:hover:bg-primary-950/40'
-                    : 'text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-750 hover:text-surface-900 dark:hover:text-white'
+                    : 'text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 hover:text-surface-900 dark:hover:text-white'
                 } ${day.isDisabled ? 'opacity-30 cursor-not-allowed hover:bg-transparent' : ''}`}
               >
                 {day.dayNumber}
@@ -347,12 +347,12 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           </div>
 
           {/* Bottom Bar: Clear / Today Shortcuts */}
-          <div className="flex items-center justify-between pt-2 border-t border-surface-100 dark:border-surface-800 text-xs">
+          <div className="flex items-center justify-between pt-2 border-t border-surface-100 dark:border-surface-700 text-xs">
             {!required ? (
               <button
                 type="button"
                 onClick={handleClear}
-                className="text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 font-medium transition-colors"
+                className="text-surface-500 dark:text-surface-400 hover:text-surface-800 dark:hover:text-surface-200 font-medium transition-colors"
               >
                 Clear
               </button>

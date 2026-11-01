@@ -129,7 +129,7 @@ export function Select<T extends string | number>({
         type="button"
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between gap-2 rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500/50 hover:bg-surface-200/70 dark:hover:bg-surface-750 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${sizeClasses}`}
+        className={`w-full flex items-center justify-between gap-2 rounded-xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-900 dark:text-white font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500/50 hover:bg-surface-200/70 dark:hover:bg-surface-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${sizeClasses}`}
       >
         <span className="flex items-center gap-1.5 truncate">
           {icon && <span className="shrink-0 text-surface-400">{icon}</span>}
@@ -141,7 +141,7 @@ export function Select<T extends string | number>({
               <span className="truncate">{selectedOption.label}</span>
             </>
           ) : (
-            <span className="text-surface-400">{placeholder}</span>
+            <span className="text-surface-400 dark:text-surface-400">{placeholder}</span>
           )}
         </span>
 
@@ -159,7 +159,7 @@ export function Select<T extends string | number>({
             dropdownAlign === 'right' ? 'right-0' : 'left-0'
           } ${
             dropUp ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
-          } z-50 w-max min-w-[140px] max-w-[calc(100vw-32px)] max-h-60 overflow-y-auto rounded-2xl bg-white dark:bg-surface-850 border border-surface-200 dark:border-surface-700/80 shadow-xl shadow-surface-950/10 dark:shadow-surface-950/40 p-1 animate-in fade-in zoom-in-95 duration-150 space-y-0.5`}
+          } z-50 w-max min-w-[140px] max-w-[calc(100vw-32px)] max-h-60 overflow-y-auto rounded-2xl bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 shadow-xl shadow-surface-950/10 dark:shadow-surface-950/60 p-1.5 animate-in fade-in zoom-in-95 duration-150 space-y-0.5`}
         >
           {options.map((opt) => {
             const isSelected = opt.value === value;
@@ -172,10 +172,10 @@ export function Select<T extends string | number>({
                   onChange(opt.value);
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl text-xs font-medium text-left transition-colors cursor-pointer select-none ${
+                className={`w-full flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-xs font-medium text-left transition-colors cursor-pointer select-none ${
                   isSelected
-                    ? 'bg-primary-50 dark:bg-primary-950/50 text-primary-600 dark:text-primary-400 font-bold'
-                    : 'text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 hover:text-surface-900 dark:hover:text-white'
+                    ? 'bg-primary-50 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400 font-bold'
+                    : 'text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 hover:text-surface-900 dark:hover:text-white'
                 } ${opt.disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
               >
                 <span className="flex items-center gap-2 truncate">
