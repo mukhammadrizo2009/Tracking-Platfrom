@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { Select } from '../../components/ui/Select';
 import { DatePicker } from '../../components/ui/DatePicker';
+import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import {
   Target,
   Plus,
@@ -32,6 +33,8 @@ export const GoalsPage: React.FC = () => {
   const [goalDescription, setGoalDescription] = useState('');
   const [goalDesiredOutcome, setGoalDesiredOutcome] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [goalToDelete, setGoalToDelete] = useState<number | null>(null);
+  const [isDeletingGoal, setIsDeletingGoal] = useState(false);
 
   // Inline Task Add
   const [newTaskTitle, setNewTaskTitle] = useState<{ [goalId: number]: string }>({});
@@ -116,13 +119,21 @@ export const GoalsPage: React.FC = () => {
     }
   };
 
-  const handleDeleteGoal = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this goal and all its tasks?')) return;
+  const handleDeleteGoal = (id: number) => {
+    setGoalToDelete(id);
+  };
+
+  const handleConfirmDeleteGoal = async () => {
+    if (!goalToDelete) return;
+    setIsDeletingGoal(true);
     try {
-      await goalsApi.delete(id);
-      setGoals((prev) => prev.filter((g) => g.id !== id));
+      await goalsApi.delete(goalToDelete);
+      setGoals((prev) => prev.filter((g) => g.id !== goalToDelete));
+      setGoalToDelete(null);
     } catch {
       fetchGoals();
+    } finally {
+      setIsDeletingGoal(false);
     }
   };
 
@@ -495,6 +506,17 @@ export const GoalsPage: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={goalToDelete !== null}
+        onClose={() => setGoalToDelete(null)}
+        onConfirm={handleConfirmDeleteGoal}
+        title="Delete Goal"
+        description="Are you sure you want to delete this goal and all its milestones? This action cannot be undone."
+        confirmText="Delete Goal"
+        isLoading={isDeletingGoal}
+      />
     </div>
   );
 };

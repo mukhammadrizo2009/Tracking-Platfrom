@@ -4,6 +4,7 @@ import type { Habit } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { Select } from '../../components/ui/Select';
+import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import {
   CheckSquare,
   Plus,
@@ -60,6 +61,8 @@ export const HabitsTrackerPage: React.FC = () => {
   const [habitName, setHabitName] = useState('');
   const [habitDesc, setHabitDesc] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [habitToDelete, setHabitToDelete] = useState<number | null>(null);
+  const [isDeletingHabit, setIsDeletingHabit] = useState(false);
 
   const fetchHabits = async () => {
     try {
@@ -240,13 +243,21 @@ export const HabitsTrackerPage: React.FC = () => {
     }
   };
 
-  const handleDeleteHabit = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this habit?')) return;
+  const handleDeleteHabit = (id: number) => {
+    setHabitToDelete(id);
+  };
+
+  const handleConfirmDeleteHabit = async () => {
+    if (!habitToDelete) return;
+    setIsDeletingHabit(true);
     try {
-      await habitsApi.delete(id);
-      setHabits((prev) => prev.filter((h) => h.id !== id));
+      await habitsApi.delete(habitToDelete);
+      setHabits((prev) => prev.filter((h) => h.id !== habitToDelete));
+      setHabitToDelete(null);
     } catch {
       fetchHabits();
+    } finally {
+      setIsDeletingHabit(false);
     }
   };
 
@@ -1329,6 +1340,17 @@ export const HabitsTrackerPage: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={habitToDelete !== null}
+        onClose={() => setHabitToDelete(null)}
+        onConfirm={handleConfirmDeleteHabit}
+        title="Delete Habit"
+        description="Are you sure you want to delete this habit? All recorded streaks and completion history will be permanently deleted."
+        confirmText="Delete Habit"
+        isLoading={isDeletingHabit}
+      />
     </div>
   );
 };

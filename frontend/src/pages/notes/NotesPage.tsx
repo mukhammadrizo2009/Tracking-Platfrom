@@ -3,6 +3,7 @@ import { notesApi } from '../../api/endpoints';
 import type { Note } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
+import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import {
   FileText,
   Plus,
@@ -26,6 +27,8 @@ export const NotesPage: React.FC = () => {
   const [content, setContent] = useState('');
   const [tags, setTags] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [noteToDelete, setNoteToDelete] = useState<number | null>(null);
+  const [isDeletingNote, setIsDeletingNote] = useState(false);
 
   const fetchNotes = async () => {
     try {
@@ -66,13 +69,21 @@ export const NotesPage: React.FC = () => {
     }
   };
 
-  const handleDeleteNote = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this note?')) return;
+  const handleDeleteNote = (id: number) => {
+    setNoteToDelete(id);
+  };
+
+  const handleConfirmDeleteNote = async () => {
+    if (!noteToDelete) return;
+    setIsDeletingNote(true);
     try {
-      await notesApi.delete(id);
-      setNotes((prev) => prev.filter((n) => n.id !== id));
+      await notesApi.delete(noteToDelete);
+      setNotes((prev) => prev.filter((n) => n.id !== noteToDelete));
+      setNoteToDelete(null);
     } catch {
       fetchNotes();
+    } finally {
+      setIsDeletingNote(false);
     }
   };
 
@@ -255,6 +266,17 @@ export const NotesPage: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={noteToDelete !== null}
+        onClose={() => setNoteToDelete(null)}
+        onConfirm={handleConfirmDeleteNote}
+        title="Delete Quick Note"
+        description="Are you sure you want to delete this note? This action cannot be undone."
+        confirmText="Delete Note"
+        isLoading={isDeletingNote}
+      />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { Select } from '../../components/ui/Select';
 import { DatePicker } from '../../components/ui/DatePicker';
+import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import {
   Play,
   Pause,
@@ -17,6 +18,7 @@ import {
   CheckCircle,
   Loader2,
   Flame,
+  X,
 } from 'lucide-react';
 
 export const StudyTrackerPage: React.FC = () => {
@@ -39,6 +41,9 @@ export const StudyTrackerPage: React.FC = () => {
   const [manualDate, setManualDate] = useState(() => formatLocalDate(new Date()));
   const [manualGoalId, setManualGoalId] = useState<number | ''>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [recordToDelete, setRecordToDelete] = useState<number | null>(null);
+  const [isDeletingRecord, setIsDeletingRecord] = useState(false);
+  const [sessionAlert, setSessionAlert] = useState<{ title: string; message: string; type: 'success' | 'info' } | null>(null);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -100,14 +105,22 @@ export const StudyTrackerPage: React.FC = () => {
           goal: selectedGoalId ? Number(selectedGoalId) : null,
         });
         fetchData();
-        alert('🎉 Great job! 25-minute Pomodoro session completed and logged.');
+        setSessionAlert({
+          title: 'Pomodoro Session Completed! 🎉',
+          message: '25 minutes of deep focus logged successfully.',
+          type: 'success',
+        });
       } catch {
         // ignore
       }
       setMode('break');
       setTimeLeft(5 * 60);
     } else if (mode === 'break') {
-      alert('☕ Break is over! Ready for the next focus session?');
+      setSessionAlert({
+        title: 'Break Finished! ☕',
+        message: 'Ready for your next deep focus session?',
+        type: 'info',
+      });
       setMode('pomodoro');
       setTimeLeft(25 * 60);
     }
@@ -172,13 +185,21 @@ export const StudyTrackerPage: React.FC = () => {
     }
   };
 
-  const handleDeleteRecord = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this study record?')) return;
+  const handleDeleteRecord = (id: number) => {
+    setRecordToDelete(id);
+  };
+
+  const handleConfirmDeleteRecord = async () => {
+    if (!recordToDelete) return;
+    setIsDeletingRecord(true);
     try {
-      await studyApi.deleteRecord(id);
-      setSessions((prev) => prev.filter((s) => s.id !== id));
+      await studyApi.deleteRecord(recordToDelete);
+      setSessions((prev) => prev.filter((s) => s.id !== recordToDelete));
+      setRecordToDelete(null);
     } catch {
       fetchData();
+    } finally {
+      setIsDeletingRecord(false);
     }
   };
 
@@ -510,6 +531,46 @@ export const StudyTrackerPage: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Timer Notification Banner Toast */}
+      {sessionAlert && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm p-4 rounded-2xl bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 shadow-2xl shadow-surface-950/20 dark:shadow-surface-950/60 flex items-start gap-3 animate-in slide-in-from-bottom-5 duration-200">
+          <div
+            className={`p-2 rounded-xl shrink-0 ${
+              sessionAlert.type === 'success'
+                ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400'
+                : 'bg-primary-100 dark:bg-primary-950/60 text-primary-600 dark:text-primary-400'
+            }`}
+          >
+            <Clock className="w-5 h-5" />
+          </div>
+          <div className="flex-1 pr-1">
+            <h5 className="font-bold text-xs sm:text-sm text-surface-900 dark:text-white">
+              {sessionAlert.title}
+            </h5>
+            <p className="text-xs text-surface-500 dark:text-surface-400 mt-0.5">
+              {sessionAlert.message}
+            </p>
+          </div>
+          <button
+            onClick={() => setSessionAlert(null)}
+            className="p-1 text-surface-400 hover:text-surface-600 dark:hover:text-surface-200 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={recordToDelete !== null}
+        onClose={() => setRecordToDelete(null)}
+        onConfirm={handleConfirmDeleteRecord}
+        title="Delete Study Record"
+        description="Are you sure you want to delete this study session record? This action cannot be undone."
+        confirmText="Delete Record"
+        isLoading={isDeletingRecord}
+      />
     </div>
   );
 };
